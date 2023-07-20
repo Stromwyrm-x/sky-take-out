@@ -11,10 +11,15 @@ import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService
@@ -22,6 +27,9 @@ public class EmployeeServiceImpl implements EmployeeService
 
     @Autowired
     private EmployeeMapper employeeMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 员工登录
@@ -32,6 +40,17 @@ public class EmployeeServiceImpl implements EmployeeService
     @Override
     public Employee login(EmployeeLoginDTO employeeLoginDTO)
     {
+        //0.将传入的密码进行md5加密
+        String password = DigestUtils.md5DigestAsHex(employeeLoginDTO.getPassword().getBytes());
+        String username = employeeLoginDTO.getUsername();
+
+        ValueOperations opsForValue = redisTemplate.opsForValue();
+        //密码5分钟内输入超过5次，则锁定账号
+        if (!ObjectUtils.isEmpty(opsForValue.get("lock:"+username)))
+        {
+            throw new AccountLockedException(MessageConstant.LOGIN_LOCK);
+        }
+
         //1.根据用户名查找员工
         Employee employee = employeeMapper.selectByUsername(employeeLoginDTO.getUsername());
         //2.如果没找到，则返回异常信息
@@ -40,8 +59,16 @@ public class EmployeeServiceImpl implements EmployeeService
             throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
         }
         //3.密码进行比对
-        if (!employeeLoginDTO.getPassword().equals(employee.getPassword()))
+        if (!password.equals(employee.getPassword()))
         {
+            //3.1记录密码错误到redis中
+            opsForValue.set(getKey(username),"-",5, TimeUnit.MINUTES);
+            //3.2统计该员工的密码错误标记是否满5次
+            if (Objects.requireNonNull(redisTemplate.keys("login:" + username + ":*")).size()>=5)
+            {
+                opsForValue.set("lock:"+username,"-",1,TimeUnit.HOURS);
+                throw new AccountLockedException(MessageConstant.LOGIN_LOCK);
+            }
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
         }
         //4.判断账号是否锁定
@@ -54,7 +81,10 @@ public class EmployeeServiceImpl implements EmployeeService
 
     }
 
-
+    private static String getKey(String username)
+    {
+        return "login:" + username + ":" + UUID.randomUUID();
+    }
 
 
 //    public Employee login(EmployeeLoginDTO employeeLoginDTO) {
