@@ -1,7 +1,10 @@
 package com.sky.interceptor;
 
+import com.sky.constant.JwtClaimsConstant;
+import com.sky.context.BaseContext;
 import com.sky.properties.JwtProperties;
 import com.sky.utils.JwtUtil;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 
 /**
@@ -43,7 +47,9 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
         //3.解析令牌，若失败，则返回401
         try
         {
-            JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(),jwt);
+            Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), jwt);
+            Long empId = Long.parseLong(claims.get(JwtClaimsConstant.EMP_ID).toString());
+            BaseContext.setCurrentId(empId);
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -76,5 +82,11 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
 //            response.setStatus(401);
 //            return false;
 //        }
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception
+    {
+        BaseContext.removeCurrentId();
     }
 }

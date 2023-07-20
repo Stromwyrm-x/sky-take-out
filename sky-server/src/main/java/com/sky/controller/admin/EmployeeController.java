@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 import com.sky.constant.JwtClaimsConstant;
+import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
 import com.sky.properties.JwtProperties;
@@ -50,6 +51,12 @@ public class EmployeeController
         return Result.success(employeeLoginVO);
     }
 
+    @PostMapping
+    public Result add(@RequestBody EmployeeDTO employeeDTO)
+    {
+        employeeService.save(employeeDTO);
+        return Result.success();
+    }
 
 
 
