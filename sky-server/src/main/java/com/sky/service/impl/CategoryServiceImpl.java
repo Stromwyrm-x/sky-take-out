@@ -97,7 +97,7 @@ public class CategoryServiceImpl implements CategoryService
     @Override
     public List<Category> listByType(Integer type)
     {
-        List<Category>categoryList=categoryMapper.listByType(type);
+         List<Category>categoryList=categoryMapper.listByType(type);
         return categoryList;
     }
 }

@@ -12,6 +12,8 @@ import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import com.sky.utils.JwtUtil;
 import com.sky.vo.EmployeeLoginVO;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -87,5 +89,14 @@ public class EmployeeController
         return Result.success();
     }
 
+//    @PostMapping("/logout")
+//    public Result logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+//    {
+//        log.info("token为：{}",httpServletRequest.getHeader("token"));
+//        //清理jwt的token
+//        httpServletResponse.setHeader("token","fuck");
+//        log.info("token为：{}",httpServletRequest.getHeader("token"));
+//        return Result.success();
+//    }
 
 }
