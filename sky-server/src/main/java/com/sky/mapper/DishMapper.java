@@ -41,4 +41,8 @@ public interface DishMapper
 
     @AutoFill(OperationType.UPDATE)
     void updateById(Dish dish);
+
+    //套餐中选择菜品，只能选择启售中的菜品
+    @Select("select * from dish where category_id=#{categoryId} and status=1")
+    List<Dish> selectByCategoryId(Long categoryId);
 }
