@@ -1,6 +1,7 @@
 package com.sky.config;
 
 import com.sky.interceptor.JwtTokenAdminInterceptor;
+import com.sky.interceptor.JwtTokenUserInterceptor;
 import com.sky.json.JacksonObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,21 @@ public class WebMvcConfig implements WebMvcConfigurer
 {
     @Autowired
     private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
+
+    @Autowired
+    private JwtTokenUserInterceptor jwtTokenUserInterceptor;
     @Override
     public void addInterceptors(InterceptorRegistry registry)
     {
+        //管理端的令牌校验拦截器
         registry.addInterceptor(jwtTokenAdminInterceptor)
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns("/admin/employee/login");
+        //小程序端的令牌校验拦截器
+        registry.addInterceptor(jwtTokenUserInterceptor)
+                .addPathPatterns("/user/**")
+                .excludePathPatterns("/user/user/login","/user/shop/status");
+
 
     }
 

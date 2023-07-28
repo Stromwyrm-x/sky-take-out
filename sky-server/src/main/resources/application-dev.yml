@@ -11,4 +11,7 @@ sky:
     bucket-name: my-sky-take-out-heima
     access-key-id: LTAI5tCCW42WHa7gC6eZB6HF
     access-key-secret: 4QNUiW0zGwgEV567BNOVmOEEg8R3dT
+  wechat:
+    appid: wx189816a6dd169b25
+    secret: e8823d58ca24132ff55b2f2c1687a278
 

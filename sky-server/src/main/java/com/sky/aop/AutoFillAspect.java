@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class AutoFillAspect
 {
+    //运用了注解和反射的知识
     @Around("execution(* com.sky.mapper.*.*(..)) && @annotation(autoFill)")
     public void autoFill(ProceedingJoinPoint proceedingJoinPoint, AutoFill autoFill) throws Throwable
     {

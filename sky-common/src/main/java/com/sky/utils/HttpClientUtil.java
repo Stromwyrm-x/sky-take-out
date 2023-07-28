@@ -57,6 +57,7 @@ public class HttpClientUtil {
 
             //判断响应状态
             if(response.getStatusLine().getStatusCode() == 200){
+                //拿到响应体，转成字符串
                 result = EntityUtils.toString(response.getEntity(),"UTF-8");
             }
         }catch (Exception e){

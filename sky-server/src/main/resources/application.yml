@@ -45,11 +45,17 @@ sky:
     admin-ttl: 72000000
     # 设置前端传递过来的令牌名称
     admin-token-name: token
+    user-secret-key: itheima
+    user-ttl: 72000000
+    user-token-name: authentication
   alioss:
     access-key-id: ${sky.alioss.access-key-id}
     access-key-secret: ${sky.alioss.access-key-secret}
     bucket-name: ${sky.alioss.bucket-name}
     endpoint: ${sky.alioss.endpoint}
+  wechat:
+    appid: ${sky.wechat.appid}
+    secret: ${sky.wechat.secret}
 
 
 # springdoc-openapi项目配置
@@ -64,6 +70,8 @@ springdoc:
     - group: 'default'
       paths-to-match: '/**'
       packages-to-scan: com.sky.controller
+
+
 # knife4j的增强配置，不需要增强可以不配
 knife4j:
   enable: true
