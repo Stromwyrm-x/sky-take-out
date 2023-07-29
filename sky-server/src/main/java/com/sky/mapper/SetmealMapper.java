@@ -37,4 +37,7 @@ public interface SetmealMapper
 
     @AutoFill(OperationType.UPDATE)
     void update(Setmeal setmeal);
+
+    @Select("select * from setmeal where category_id=#{categoryId} and status=1")
+    List<Setmeal> selectByCategoryId(Long categoryId);
 }
