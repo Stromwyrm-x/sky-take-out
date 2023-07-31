@@ -6,17 +6,15 @@ spring:
     active: dev
   main:
     allow-circular-references: true
-  datasource:
+  datasource: #mysql账号密码输错也能启动(8和5不一样之处)，但是不可以查询出来
     driver-class-name: ${sky.datasource.driver-class-name}
-    url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}
     username: ${sky.datasource.username}
     password: ${sky.datasource.password}
-    type: com.zaxxer.hikari.HikariDataSource
   data:
-    redis:
+    redis: #没有redis也能启动，但是不可以登录（因为用户登录要用到redis来锁定账号）
       host: localhost
       port: 6379
-      #password: wengyehao123
       database: 0
       client-type: lettuce
 

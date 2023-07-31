@@ -17,6 +17,9 @@ import com.sky.vo.DishItemVO;
 import com.sky.vo.SetmealVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -31,6 +34,7 @@ public class SetmealServiceImpl implements SetmealService
     @Autowired
     private SetmealDishMapper setmealDishMapper;
 
+    @CacheEvict(value = "setmeal_",key = "#setmealDTO.categoryId")
     @Override
     public void addWithSetmealDish(SetmealDTO setmealDTO)
     {
@@ -56,6 +60,7 @@ public class SetmealServiceImpl implements SetmealService
         return new PageResult(setmealVOPage.getTotal(),setmealVOPage.getResult());
     }
 
+    @CacheEvict(value = "setmeal_",allEntries = true)
     @Override
     public void deleteByIdsWithSetmealDish(List<Long> ids)
     {
@@ -81,9 +86,10 @@ public class SetmealServiceImpl implements SetmealService
         //3.封装
         SetmealVO setmealVO = SetmealVO.builder().setmealDishes(setmealDishes).build();
         BeanUtils.copyProperties(setmeal,setmealVO);
-            return setmealVO;
+        return setmealVO;
     }
 
+    @CacheEvict(value = "setmeal_",allEntries = true)
     @Override
     public void updateById(SetmealDTO setmealDTO)
     {
@@ -101,6 +107,7 @@ public class SetmealServiceImpl implements SetmealService
         setmealDishMapper.insertBatch(setmealDishes);
     }
 
+    @CacheEvict(value = "setmeal_",allEntries = true)
     @Override
     public void changeStatus(Integer status, Long id)
     {
@@ -112,6 +119,7 @@ public class SetmealServiceImpl implements SetmealService
 
     }
 
+    @Cacheable(value = "setmeal_",key = "#categoryId",unless = "#result==null")
     @Override
     public List<Setmeal> getByCategoryId(Long categoryId)
     {
