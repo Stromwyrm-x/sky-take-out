@@ -1,9 +1,11 @@
 package com.sky.service;
 
-import com.sky.dto.OrdersPaymentDTO;
-import com.sky.dto.OrdersSubmitDTO;
+import com.sky.dto.*;
+import com.sky.result.PageResult;
 import com.sky.vo.OrderPaymentVO;
+import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface OrdersService
@@ -23,4 +25,26 @@ public interface OrdersService
      * @param outTradeNo
      */
     void paySuccess(String outTradeNo);
+
+    PageResult page(OrdersPageQueryDTO ordersPageQueryDTO);
+
+    OrderVO getByIdWithOrderDetail(Long id);
+
+    void cancelById(Long id);
+
+    void orderAgain(Long id);
+
+    PageResult conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO);
+
+    OrderStatisticsVO countByStatus();
+
+    void cancel(OrdersCancelDTO ordersCancelDTO);
+
+    void confirm(OrdersConfirmDTO ordersConfirmDTO);
+
+    void rejection(OrdersRejectionDTO ordersRejectionDTO);
+
+    void delivery(Long id);
+
+    void complete(Long id);
 }

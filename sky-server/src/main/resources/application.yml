@@ -61,6 +61,10 @@ sky:
     weChatPayCertFilePath: ${sky.wechat.weChatPayCertFilePath}
     notifyUrl: ${sky.wechat.notifyUrl}
     refundNotifyUrl: ${sky.wechat.refundNotifyUrl}
+  baidu:
+    ak: ${sky.baidu.ak}
+  shop:
+    address: ${sky.shop.address}
 
 
 # springdoc-openapi项目配置

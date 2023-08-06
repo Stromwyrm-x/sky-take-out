@@ -1,17 +1,21 @@
 package com.sky.controller.user;
 
 
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
+import com.sky.entity.Orders;
+import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrdersService;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@RestController(value = "userOrdersController")
 @Slf4j
 @RequestMapping("/user/order")
 public class OrdersController
@@ -19,6 +23,11 @@ public class OrdersController
     @Autowired
     private OrdersService ordersService;
 
+    /**
+     * 用户下单
+     * @param ordersSubmitDTO
+     * @return
+     */
     @PostMapping("/submit")
     public Result<OrderSubmitVO> submit(@RequestBody OrdersSubmitDTO ordersSubmitDTO)
     {
@@ -45,7 +54,52 @@ public class OrdersController
         return Result.success(orderPaymentVO);
     }
 
+    /**
+     * 查询历史订单
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    @GetMapping("/historyOrders")
+    public Result<PageResult> page(OrdersPageQueryDTO ordersPageQueryDTO)
+    {
+        PageResult pageResult=ordersService.page(ordersPageQueryDTO);
+        return Result.success(pageResult);
+    }
 
+    /**
+     * 查询订单详细
+     * @param id
+     * @return
+     */
+    @GetMapping("/orderDetail/{id}")
+    public Result<OrderVO> getById(@PathVariable Long id)
+    {
+        OrderVO orderVO=ordersService.getByIdWithOrderDetail(id);
+        return Result.success(orderVO);
+    }
 
+    /**
+     * 取消订单
+     * @param id
+     * @return
+     */
+    @PutMapping("/cancel/{id}")
+    public Result cancel(@PathVariable Long id)
+    {
+        ordersService.cancelById(id);
+        return Result.success();
+    }
+
+    /**
+     * 再来一单
+     * @param id
+     * @return
+     */
+    @PostMapping("/repetition/{id}")
+    public Result orderAgain(@PathVariable Long id)
+    {
+        ordersService.orderAgain(id);
+        return Result.success();
+    }
 
 }

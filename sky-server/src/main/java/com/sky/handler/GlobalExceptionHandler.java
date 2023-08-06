@@ -1,5 +1,6 @@
 package com.sky.handler;
 
+import com.sky.constant.MessageConstant;
 import com.sky.exception.BaseException;
 import com.sky.result.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,7 @@ public class GlobalExceptionHandler {
             String[] split = message.split(" ");
             return Result.error(split[2]+"已存在！");
         }
-        return Result.error("未知错误！");
+        return Result.error(MessageConstant.UNKNOWN_ERROR);
     }
 
     /**
@@ -45,6 +46,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public Result exceptionHandler(Exception ex)
     {
-        return Result.error("未知错误！");
+        return Result.error(MessageConstant.UNKNOWN_ERROR);
     }
 }

@@ -26,21 +26,22 @@ public class ShoppingCartServiceImpl implements ShoppingCartService
 
     @Autowired
     private SetmealMapper setmealMapper;
+
     @Override
     public void add(ShoppingCartDTO shoppingCartDTO)
     {
         //1.查询当前用户购物车中是否有该菜品-口味/套餐
         Long userId = BaseContext.getCurrentId();
         ShoppingCart shoppingCart = ShoppingCart.builder()
-                                                .userId(userId)
-                                                .dishId(shoppingCartDTO.getDishId())
-                                                .dishFlavor(shoppingCartDTO.getDishFlavor())
-                                                .setmealId(shoppingCartDTO.getSetmealId()).build();
-        ShoppingCart shoppingCart_current=shoppingCartMapper.list(shoppingCart);
+                .userId(userId)
+                .dishId(shoppingCartDTO.getDishId())
+                .dishFlavor(shoppingCartDTO.getDishFlavor())
+                .setmealId(shoppingCartDTO.getSetmealId()).build();
+        ShoppingCart shoppingCart_current = shoppingCartMapper.list(shoppingCart);
         //2.若有则number+1
-        if (shoppingCart_current!=null)
+        if (shoppingCart_current != null)
         {
-            shoppingCart_current.setNumber(shoppingCart_current.getNumber()+1);
+            shoppingCart_current.setNumber(shoppingCart_current.getNumber() + 1);
             shoppingCartMapper.updateNumberById(shoppingCart_current);
         }
         //3.若没有则新增一条数据
@@ -48,15 +49,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService
         {
             Long dishId = shoppingCart.getDishId();
             Long setmealId = shoppingCart.getSetmealId();
-            if (dishId!=null)
+            if (dishId != null)
             {
                 //3.1添加的是菜品，查询菜品信息，封装到shoppingCart中
                 Dish dish = dishMapper.selectById(dishId);
                 shoppingCart.setName(dish.getName());
                 shoppingCart.setImage(dish.getImage());
                 shoppingCart.setAmount(dish.getPrice());
-            }
-            else if (setmealId!=null)
+            } else if (setmealId != null)
             {
                 //3.2添加的是套餐，查询套餐信息，封装到shoppingCart中
                 Setmeal setmeal = setmealMapper.selectById(setmealId);
@@ -76,7 +76,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService
     public List<ShoppingCart> getByUserId()
     {
         Long userId = BaseContext.getCurrentId();
-        List<ShoppingCart>shoppingCartList=shoppingCartMapper.selectByUserId(userId);
+        List<ShoppingCart> shoppingCartList = shoppingCartMapper.selectByUserId(userId);
         return shoppingCartList;
     }
 
@@ -97,15 +97,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService
                 .dishId(shoppingCartDTO.getDishId())
                 .dishFlavor(shoppingCartDTO.getDishFlavor())
                 .setmealId(shoppingCartDTO.getSetmealId()).build();
-        ShoppingCart shoppingCart_current=shoppingCartMapper.list(shoppingCart);
+        ShoppingCart shoppingCart_current = shoppingCartMapper.list(shoppingCart);
         //2.若number>1，则更新number为number-1
-        if (shoppingCart_current!=null&&shoppingCart_current.getNumber()>1)
+        if (shoppingCart_current != null && shoppingCart_current.getNumber() > 1)
         {
-            shoppingCart_current.setNumber(shoppingCart_current.getNumber()-1);
+            shoppingCart_current.setNumber(shoppingCart_current.getNumber() - 1);
             shoppingCartMapper.updateNumberById(shoppingCart_current);
         }
         //3.若number=1，则删除该条数据
-        else if (shoppingCart_current!=null&&shoppingCart_current.getNumber()==1)
+        else if (shoppingCart_current != null && shoppingCart_current.getNumber() == 1)
         {
             shoppingCartMapper.deleteById(shoppingCart_current.getId());
         }
