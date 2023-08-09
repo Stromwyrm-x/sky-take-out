@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController(value = "userOrdersController")
 @Slf4j
 @RequestMapping("/user/order")
@@ -99,6 +101,18 @@ public class OrdersController
     public Result orderAgain(@PathVariable Long id)
     {
         ordersService.orderAgain(id);
+        return Result.success();
+    }
+
+    /**
+     * 用户催单
+     * @param id
+     * @return
+     */
+    @GetMapping("/reminder/{id}")
+    public Result reminder(@PathVariable Long id) throws IOException
+    {
+        ordersService.reminder(id);
         return Result.success();
     }
 

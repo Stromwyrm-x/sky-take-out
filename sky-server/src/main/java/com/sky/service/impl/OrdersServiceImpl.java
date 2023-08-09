@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.*;
@@ -21,12 +23,14 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +63,12 @@ public class OrdersServiceImpl implements OrdersService
 
     @Value("${sky.baidu.ak}")
     private String ak;
+
+    @Autowired
+    private WebSocketServer webSocketServer;
+
+    @Autowired
+    private Gson gson;
 
     @Override
     public OrderSubmitVO submit(OrdersSubmitDTO ordersSubmitDTO)
@@ -155,7 +165,7 @@ public class OrdersServiceImpl implements OrdersService
      *
      * @param outTradeNo
      */
-    public void paySuccess(String outTradeNo)
+    public void paySuccess(String outTradeNo) throws IOException
     {
         // 当前登录用户id
         Long userId = BaseContext.getCurrentId();
@@ -173,6 +183,12 @@ public class OrdersServiceImpl implements OrdersService
 
         ordersMapper.update(orders);
 
+        //来单提醒
+        Map<String,Object>map=new HashMap<>();
+        map.put("type", 1);//消息类型，1表示来单提醒
+        map.put("orderId", orders.getId());
+        map.put("content", "订单号：" + outTradeNo);
+        webSocketServer.sendToAll(gson.toJson(map));
 
     }
 
@@ -376,6 +392,17 @@ public class OrdersServiceImpl implements OrdersService
         orders.setStatus(Orders.COMPLETED);
         orders.setDeliveryTime(LocalDateTime.now());
         ordersMapper.update(orders);
+    }
+
+    @Override
+    public void reminder(Long id) throws IOException
+    {
+        Orders orders = ordersMapper.getById(id);
+        Map<String,Object>map=new HashMap<>();
+        map.put("type", 2);//消息类型，2表示催单提醒
+        map.put("orderId", orders.getId());
+        map.put("content", "订单号：" + orders.getNumber());
+        webSocketServer.sendToAll(gson.toJson(map));
     }
 
     /**

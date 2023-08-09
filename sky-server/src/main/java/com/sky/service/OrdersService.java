@@ -8,6 +8,8 @@ import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+
 public interface OrdersService
 {
     @Transactional
@@ -24,7 +26,7 @@ public interface OrdersService
      * 支付成功，修改订单状态
      * @param outTradeNo
      */
-    void paySuccess(String outTradeNo);
+    void paySuccess(String outTradeNo) throws IOException;
 
     PageResult page(OrdersPageQueryDTO ordersPageQueryDTO);
 
@@ -47,4 +49,6 @@ public interface OrdersService
     void delivery(Long id);
 
     void complete(Long id);
+
+    void reminder(Long id) throws IOException;
 }
