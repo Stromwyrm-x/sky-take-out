@@ -4,4 +4,15 @@
 <mapper namespace="com.sky.mapper.UserMapper">
 
 
+    <select id="selectNewUserList" resultType="com.sky.dto.UserReportDTO">
+        select date_format(create_time, '%Y-%m-%d') as createDate,count(*) as userCount
+        from user
+        <where>
+            <if test="beginTime!=null and endTime!=null">
+               create_time between #{beginTime} and #{endTime}
+            </if>
+        </where>
+        group by date_format(create_time, '%Y-%m-%d')
+        order by date_format(create_time, '%Y-%m-%d');
+    </select>
 </mapper>

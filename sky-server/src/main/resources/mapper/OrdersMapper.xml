@@ -73,5 +73,51 @@
         where status=#{status}
     </select>
 
+    <!--目前最难sql-->
+    <select id="selectTurnoverStatistics" resultType="com.sky.dto.TurnoverReportDTO">
+        select date_format(order_time, '%Y-%m-%d') as orderDate,sum(amount) as orderMoney
+        from orders
+        <where>
+            <if test="status!=null">
+                status=#{status}
+            </if>
+            <if test="beginTime!=null and endTime!=null">
+                and order_time between #{beginTime} and #{endTime}
+            </if>
+        </where>
+        group by date_format(order_time, '%Y-%m-%d')
+        order by date_format(order_time, '%Y-%m-%d')
+    </select>
+
+    <select id="selectOrderStatistics" resultType="com.sky.dto.OrdersReportDTO">
+        select date_format(order_time, '%Y-%m-%d') as orderDate,count(*) as orderCount
+        from orders
+        <where>
+            <if test="status!=null">
+                status=#{status}
+            </if>
+            <if test="beginTime!=null and endTime!=null">
+                and order_time between #{beginTime} and #{endTime}
+            </if>
+        </where>
+        group by date_format(order_time, '%Y-%m-%d')
+        order by date_format(order_time, '%Y-%m-%d')
+    </select>
+
+    <select id="selectTop10" resultType="com.sky.dto.GoodsSalesDTO">
+        select order_detail.name as name, count(*) as number
+        from orders left join order_detail on orders.id = order_detail.order_id
+        <where>
+            <if test="status!=null">
+                status=#{status}
+            </if>
+            <if test="beginTime!=null and endTime!=null">
+                and order_time between #{beginTime} and #{endTime}
+            </if>
+        </where>
+        group by order_detail.name
+        order by count(*) desc
+        limit 0,10
+    </select>
 
 </mapper>

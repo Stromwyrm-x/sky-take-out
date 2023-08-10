@@ -2,7 +2,10 @@ package com.sky.mapper;
 
 
 import com.github.pagehelper.Page;
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.dto.OrdersPageQueryDTO;
+import com.sky.dto.OrdersReportDTO;
+import com.sky.dto.TurnoverReportDTO;
 import com.sky.entity.Orders;
 import com.sky.vo.OrderVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -44,4 +47,10 @@ public interface OrdersMapper
 
     @Select("select * from orders where status=#{status} and order_time < #{beforeTime}")
     List<Orders> selectByStatusAndTime(Integer status, LocalDateTime beforeTime);
+
+    List<TurnoverReportDTO> selectTurnoverStatistics(LocalDateTime beginTime, LocalDateTime endTime, Integer status);
+
+    List<OrdersReportDTO> selectOrderStatistics(LocalDateTime beginTime, LocalDateTime endTime, Integer status);
+
+    List<GoodsSalesDTO> selectTop10(LocalDateTime beginTime, LocalDateTime endTime, Integer status);
 }
