@@ -40,4 +40,7 @@ public interface SetmealMapper
 
     @Select("select * from setmeal where category_id=#{categoryId} and status=1")
     List<Setmeal> selectByCategoryId(Long categoryId);
+
+    @Select("select count(*) from setmeal where status=#{status}")
+    Integer countByStatus(Integer status);
 }

@@ -43,7 +43,7 @@ public interface OrdersMapper
     @Select("select * from orders where id=#{id}")
     Orders getById(Long id);
 
-    Integer countByStatus(Integer status);
+    Integer countByStatus(LocalDateTime beginTime, LocalDateTime endTime, Integer status);
 
     @Select("select * from orders where status=#{status} and order_time < #{beforeTime}")
     List<Orders> selectByStatusAndTime(Integer status, LocalDateTime beforeTime);

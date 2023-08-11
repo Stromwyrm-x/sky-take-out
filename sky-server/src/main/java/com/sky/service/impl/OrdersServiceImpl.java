@@ -299,11 +299,11 @@ public class OrdersServiceImpl implements OrdersService
     public OrderStatisticsVO countByStatus()
     {
         //待接单数量
-        Integer toBeConfirmed = ordersMapper.countByStatus(Orders.TO_BE_CONFIRMED);
+        Integer toBeConfirmed = ordersMapper.countByStatus(null,null,Orders.TO_BE_CONFIRMED);
         //待派送数量
-        Integer confirmed = ordersMapper.countByStatus(Orders.CONFIRMED);
+        Integer confirmed = ordersMapper.countByStatus(null,null,Orders.CONFIRMED);
         //派送中数量
-        Integer deliveryInProgress = ordersMapper.countByStatus(Orders.DELIVERY_IN_PROGRESS);
+        Integer deliveryInProgress = ordersMapper.countByStatus(null,null,Orders.DELIVERY_IN_PROGRESS);
 
         OrderStatisticsVO orderStatisticsVO = OrderStatisticsVO.builder()
                 .toBeConfirmed(toBeConfirmed)

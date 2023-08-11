@@ -70,7 +70,14 @@
 
     <select id="countByStatus" resultType="java.lang.Integer">
         select count(*) from orders
-        where status=#{status}
+        <where>
+            <if test="status!=null">
+                status=#{status}
+            </if>
+            <if test="beginTime!=null and endTime!=null">
+                and order_time between #{beginTime} and #{endTime}
+            </if>
+        </where>
     </select>
 
     <!--目前最难sql-->

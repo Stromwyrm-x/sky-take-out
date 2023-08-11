@@ -45,4 +45,8 @@ public interface DishMapper
     //套餐中选择菜品，只能选择启售中的菜品
     @Select("select * from dish where category_id=#{categoryId} and status=1")
     List<Dish> selectByCategoryId(Long categoryId);
+
+    @Select("select count(*) from dish where status=#{status}")
+    Integer countByStatus(Integer status);
+
 }
