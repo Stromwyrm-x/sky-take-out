@@ -18,8 +18,10 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkspaceServiceImpl implements WorkspaceService
@@ -40,13 +42,13 @@ public class WorkspaceServiceImpl implements WorkspaceService
     public BusinessDataVO getBusinessData(LocalDateTime beginTime, LocalDateTime endTime)
     {
         List<TurnoverReportDTO> turnoverReportDTOList = ordersMapper.selectTurnoverStatistics(beginTime, endTime, Orders.COMPLETED);
-        Double turnover = CollectionUtils.isEmpty(turnoverReportDTOList) ? 0.0 : turnoverReportDTOList.get(0).getOrderMoney().doubleValue();
+        Double turnover = CollectionUtils.isEmpty(turnoverReportDTOList) ? 0.0 : turnoverReportDTOList.stream().mapToDouble(turnoverReportDTO -> turnoverReportDTO.getOrderMoney().doubleValue()).sum();
 
         List<OrdersReportDTO> validOrdersReportDTOList = ordersMapper.selectOrderStatistics(beginTime, endTime, Orders.COMPLETED);
-        Integer validOrderCount = CollectionUtils.isEmpty(validOrdersReportDTOList) ? 0 : validOrdersReportDTOList.get(0).getOrderCount();
+        Integer validOrderCount = CollectionUtils.isEmpty(validOrdersReportDTOList) ? 0 :validOrdersReportDTOList.stream().mapToInt(OrdersReportDTO::getOrderCount).sum();
 
         List<OrdersReportDTO> ordersReportDTOList = ordersMapper.selectOrderStatistics(beginTime, endTime, null);
-        Integer totalOrderCount = CollectionUtils.isEmpty(ordersReportDTOList) ? 0 : ordersReportDTOList.get(0).getOrderCount();
+        Integer totalOrderCount = CollectionUtils.isEmpty(ordersReportDTOList) ? 0 : ordersReportDTOList.stream().mapToInt(OrdersReportDTO::getOrderCount).sum();
 
         Double orderCompletionRate = 0.0;
         Double unitPrice = 0.0;
@@ -57,8 +59,7 @@ public class WorkspaceServiceImpl implements WorkspaceService
         }
 
         List<UserReportDTO> userReportDTOList = userMapper.selectNewUserList(beginTime, endTime);
-
-        Integer newUsers = CollectionUtils.isEmpty(userReportDTOList) ? 0 : userReportDTOList.get(0).getUserCount();
+        Integer newUsers = CollectionUtils.isEmpty(userReportDTOList) ? 0 : userReportDTOList.stream().mapToInt(UserReportDTO::getUserCount).sum();
 
         BusinessDataVO businessDataVO = BusinessDataVO.builder()
                 .turnover(turnover)

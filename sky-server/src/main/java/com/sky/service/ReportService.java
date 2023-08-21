@@ -5,7 +5,9 @@ import com.sky.vo.SalesTop10ReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface ReportService
 {
@@ -16,4 +18,6 @@ public interface ReportService
     OrderReportVO getOrdersStatistics(LocalDate begin, LocalDate end);
 
     SalesTop10ReportVO getTop10(LocalDate begin, LocalDate end);
+
+    void exportData(LocalDateTime beginTime, LocalDateTime endTime) throws IOException;
 }

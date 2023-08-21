@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @RestController
 @RequestMapping("/admin/report")
@@ -52,4 +55,12 @@ public class ReportController
         return Result.success(salesTop10ReportVO);
     }
 
+    @GetMapping("/export")
+    public void exportData() throws IOException
+    {
+        //1.获取近一个月的时间
+        LocalDateTime beginTime = LocalDateTime.now().minusDays(30).with(LocalTime.MIN);
+        LocalDateTime endTime = LocalDateTime.now().minusDays(1).with(LocalTime.MAX);
+        reportService.exportData(beginTime,endTime);
+    }
 }
