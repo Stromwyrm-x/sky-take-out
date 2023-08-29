@@ -7,6 +7,7 @@ import com.sky.context.BaseContext;
 import com.sky.enumeration.OperationType;
 import com.sky.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.util.ArrayUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -35,7 +36,9 @@ public class AutoFillAspect
             return;
         }
         Object entity=args[0];
-
+        /**
+         * 要执行setCreateTime等方法，但是不确定object是什么类型的，所以利用反射来执行方法
+         */
         //2.通过反射获取到对象方法的公共属性
         Method setCreateTime = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_TIME, LocalDateTime.class);
         Method setUpdateTime = entity.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
